@@ -30,3 +30,14 @@ components = [int(x.rstrip("\n")) for x in comps]
 fuel = [getFuelNeeds(comp)for comp in components]
 totFuel = sum(fuel)
 print(totFuel)
+
+# calculate fuel needs for fuel
+fuel4fuel = 0
+for fl in fuel:
+    fl_needs = fl
+    while fl_needs >= 0:
+        fuel4fuel += fl_needs
+        fl_needs = getFuelNeeds(fl_needs)
+
+#Total fuel needs, including the fuel the fuel needs         
+print(fuel4fuel)
