@@ -56,20 +56,14 @@ def check_rule_5_given_3(ls):
 
 # Brute force check all numbers in the range for part 1
 count_possibilities1 = 0
-for n in range(puzzle_input[0], puzzle_input[1]):
-    n_array = [int(d) for d in str(n)]
-    r4 = check_rule_4(n_array)
-    r3 = check_rule_3(n_array)
-    if (r4 & r3):
-        count_possibilities1 += 1
-
-# Brute force check all numbers in the range for part 1
 count_possibilities2 = 0
 for n in range(puzzle_input[0], puzzle_input[1]):
     n_array = [int(d) for d in str(n)]
     r4 = check_rule_4(n_array)
     r3 = check_rule_3(n_array)
     r5 = check_rule_5_given_3(n_array)
+    if (r4 & r3):
+        count_possibilities1 += 1
     if (r4 & r3 & r5):
         count_possibilities2 += 1
 
