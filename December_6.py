@@ -22,8 +22,8 @@ print("n orbits is", n_orbs)
 
 # Part 2
 #####################################
-# The approach here is to make a new dictionary of "hops" to COM for both YOU and SAN.
-# The minimum hop count will be the minimum value of the sum of hops for YOU to that fork and SAN to that fork.
+# The approach here is to make a new dictionary of "hops" for you to travel to COM. (I.e., {"PLANET": hops}) 
+# Then we will walk backwards from SAN to the first common planet for SAN and YOU, counting the hops for SAN to this planet.
 
 # Get orbit hop counts for YOU
 d_you = {}
@@ -34,17 +34,12 @@ while val != 'COM':
     val = orbd[val]
     hops += 1
 
-# Get orbit hop counts for SAN
-d_san = {}
+# Count hops for SAN to first branch in common with YOU.
 val = orbd["SAN"]
 hops = 0
-while val != 'COM':
-    d_san.update({val: hops})
+while val not in d_you:
     val = orbd[val]
     hops += 1
 
-common = d_you.keys() & d_san.keys()
-hop_totals = [d_san[k] + d_you[k] for k in common]
-
-print("minimum hops to Santa is", min(hop_totals))
+print("minimum hops to Santa is", hops + d_you[val])
 
