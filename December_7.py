@@ -9,13 +9,9 @@ def par_mode(instr, whole_op, para):
 def loop_mode(mem, input_2, op):
     while mem["i"] < len(op):
         # Parsing instructions
-        if op[mem["i"]] > 100:
-            op_code = op[mem["i"]] % 100
-            par_instr = [int(x) for x in str(op[mem["i"]])[:-2]]
-            par_instr = [0] * (3-len(par_instr)) + par_instr
-        else:
-            op_code = op[mem["i"]]
-            par_instr = [0, 0, 0]
+        op_code = op[mem["i"]] % 100
+        par_instr = [int(x) for x in str(op[mem["i"]]).zfill(5)[:-2]]
+        
         # Program end, multiplication and addition instructions (from Day 2)
         if op_code == 99:
             mem["loop"] = 0
