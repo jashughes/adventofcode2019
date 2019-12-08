@@ -182,10 +182,5 @@ def run_amps(a, b, c, d, e):
     return de["output_n"]
 
 
-# Try all combinations
-sig  = 0
-for A, B, C, D, E in permutations(range(5,10)):
-    all_amp = run_amps(A, B, C, D, E)
-    sig = max(all_amp, sig)
-                    
-print("part 2 signal is", sig)
+# Try all combinations and find the maximum output
+print(max(run_amps(*phases) for phases in permutations(range(5,10))))
