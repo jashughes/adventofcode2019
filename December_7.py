@@ -1,6 +1,6 @@
 from itertools import permutations
 # A function interpret parameter mode and return the appropriate value
-def par_mode(instr, whole_op, para):
+def par(instr, whole_op, para):
     if instr == 1:
         return(para)
     else:
@@ -10,17 +10,17 @@ def loop_mode(mem, input_2, op):
     while mem["i"] < len(op):
         # Parsing instructions
         op_code = op[mem["i"]] % 100
-        par_instr = [int(x) for x in str(op[mem["i"]]).zfill(5)[:-2]]
-        
+        inst = [int(x) for x in str(op[mem["i"]]).zfill(5)[:-2]]
+
         # Program end, multiplication and addition instructions (from Day 2)
         if op_code == 99:
             mem["loop"] = 0
             break
         elif op_code == 1:
-            op[op[mem["i"] + 3]] = par_mode(par_instr[2], op, op[mem["i"] + 1]) + par_mode(par_instr[1], op, op[mem["i"] + 2])
+            op[op[mem["i"] + 3]] = par(inst[2], op, op[mem["i"] + 1]) + par(inst[1], op, op[mem["i"] + 2])
             mem["i"] += 4
         elif op_code == 2:
-            op[op[mem["i"] + 3]] = par_mode(par_instr[2], op, op[mem["i"] + 1]) * par_mode(par_instr[1], op, op[mem["i"] + 2])
+            op[op[mem["i"] + 3]] = par(inst[2], op, op[mem["i"] + 1]) * par(inst[1], op, op[mem["i"] + 2])
             mem["i"] += 4
         # Input/Output instructions
         elif op_code == 3:
@@ -29,32 +29,26 @@ def loop_mode(mem, input_2, op):
             mem["in_counter"] += 1
             mem["i"] += 2
         elif op_code == 4:
-            mem["output_n"] = par_mode(par_instr[2], op, op[mem["i"] + 1])
+            mem["output_n"] = par(inst[2], op, op[mem["i"] + 1])
             mem["i"] += 2
             break
         # Jump if TRUE/Jump FALSE
         elif op_code == 5:
-            if (par_mode(par_instr[2], op, op[mem["i"] + 1]) != 0):
-                mem["i"] = par_mode(par_instr[1], op, op[mem["i"] + 2])
+            if (par(inst[2], op, op[mem["i"] + 1]) != 0):
+                mem["i"] = par(inst[1], op, op[mem["i"] + 2])
             else:
                 mem["i"] += 3
         elif op_code == 6:
-            if (par_mode(par_instr[2], op, op[mem["i"] + 1]) == 0):
-                mem["i"] = par_mode(par_instr[1], op, op[mem["i"] + 2])
+            if (par(inst[2], op, op[mem["i"] + 1]) == 0):
+                mem["i"] = par(inst[1], op, op[mem["i"] + 2])
             else:
                 mem["i"] += 3
         # Less than / Equal to
         elif op_code == 7:
-            if (par_mode(par_instr[2], op, op[mem["i"] + 1]) < par_mode(par_instr[1], op, op[mem["i"] + 2])):
-                op[op[mem["i"] + 3]] = 1
-            else:
-                op[op[mem["i"] + 3]] = 0
+            op[op[mem["i"] + 3]] = int((par(inst[2], op, op[mem["i"] + 1]) < par(inst[1], op, op[mem["i"] + 2])))
             mem["i"] +=4
         elif op_code == 8:
-            if (par_mode(par_instr[2], op, op[mem["i"] + 1]) == par_mode(par_instr[1], op, op[mem["i"] + 2])):
-                op[op[mem["i"] + 3]] = 1
-            else:
-                op[op[mem["i"] + 3]] = 0
+            op[op[mem["i"] + 3]] = int((par(inst[2], op, op[mem["i"] + 1]) == par(inst[1], op, op[mem["i"] + 2])))
             mem["i"] +=4
         # For error checking
         else:
@@ -99,7 +93,9 @@ def series_amps(a, b, c, d, e):
     return de["output_n"]
 
 # Try all combinations and find the maximum output
-to_amp = [3,8,1001,8,10,8,105,1,0,0,21,34,51,76,101,114,195,276,357,438,99999,3,9,1001,9,3,9,1002,9,3,9,4,9,99,3,9,101,4,9,9,102,4,9,9,1001,9,5,9,4,9,99,3,9,1002,9,4,9,101,3,9,9,102,5,9,9,1001,9,2,9,1002,9,2,9,4,9,99,3,9,1001,9,3,9,102,2,9,9,101,4,9,9,102,3,9,9,101,2,9,9,4,9,99,3,9,102,2,9,9,101,4,9,9,4,9,99,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,99,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1001,9,2,9,4,9,99,3,9,1001,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,99,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,101,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,1,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,99]
+with open("December_7_input.txt") as f:
+    to_amp = f.read()
+to_amp = [int(x) for x in to_amp.split(",")]
 
 print("Part 1: max signal is", max(series_amps(*phases) for phases in permutations(range(5))))
 print("Part 2: max signal is", max(feedback_amps(*phases) for phases in permutations(range(5,10))))
