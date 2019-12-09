@@ -6,44 +6,46 @@ def par(instr, whole_op, para):
     else:
         return(whole_op[para])
 
-def do1(mem, input_2, inst, op):
+def add_inputs(mem, input_2, inst, op):
     op[op[mem["i"] + 3]] = par(inst[2], op, op[mem["i"] + 1]) + par(inst[1], op, op[mem["i"] + 2])
     mem["i"] += 4
-def do2(mem, input_2, inst, op):
+def prod_inputs(mem, input_2, inst, op):
     op[op[mem["i"] + 3]] = par(inst[2], op, op[mem["i"] + 1]) * par(inst[1], op, op[mem["i"] + 2])
     mem["i"] += 4
-def do3(mem, input_2, inst, op):
+def ins_input(mem, input_2, inst, op):
     op[op[mem["i"] + 1]] = mem["input_1"] if (mem["in_counter"] == 0) else input_2
     mem["in_counter"] += 1
     mem["i"] += 2
-def do4(mem, input_2, inst, op):
+def fetch_output(mem, input_2, inst, op):
     mem["output_n"] = par(inst[2], op, op[mem["i"] + 1])
     mem["i"] += 2
-def do5(mem, input_2, inst, op):
+def jump_true(mem, input_2, inst, op):
     mem["i"] = par(inst[1], op, op[mem["i"] + 2]) if (par(inst[2], op, op[mem["i"] + 1]) != 0) else mem["i"] + 3
-def do6(mem, input_2, inst, op):
+def jump_false(mem, input_2, inst, op):
     mem["i"] = par(inst[1], op, op[mem["i"] + 2]) if (par(inst[2], op, op[mem["i"] + 1]) == 0) else mem["i"] + 3
-def do7(mem, input_2, inst, op):
+def less_than(mem, input_2, inst, op):
     op[op[mem["i"] + 3]] = int((par(inst[2], op, op[mem["i"] + 1]) < par(inst[1], op, op[mem["i"] + 2])))
     mem["i"] +=4
-def do8(mem, input_2, inst, op):
+def equal_to(mem, input_2, inst, op):
     op[op[mem["i"] + 3]] = int((par(inst[2], op, op[mem["i"] + 1]) == par(inst[1], op, op[mem["i"] + 2])))
     mem["i"] +=4
+def code_end(mem, input_2, inst, op):
+    mem["loop"] = 0
+
+def init_op_map():
+    return({1: add_inputs, 2 : prod_inputs, 3 : ins_input, 4 : fetch_output, \
+        5 : jump_true, 6 : jump_false, 7 : less_than, 8 : equal_to, 99: code_end})
 
 def loop_mode(mem, input_2, op):
+    op_map = init_op_map()
     while mem["i"] < len(op):
-        # Parsing instructions
+        # Parse instructions
         op_code = op[mem["i"]] % 100
         inst = [int(x) for x in str(op[mem["i"]]).zfill(5)[:-2]]
-
-        #Carry out task based on opcode, calling "do" family of functions
-        if op_code == 99:
-            mem["loop"] = 0
-            break
-        else:
-            eval("".join(["do", str(op_code)]))(mem, input_2, inst, op)
-
-        if op_code == 4:
+        
+        #Carry out task based on opcode using function specified in op_map
+        op_map[op_code](mem, input_2, inst, op)
+        if op_code in [4, 99]:
             break
 
     return mem["output_n"]
@@ -51,7 +53,7 @@ def loop_mode(mem, input_2, op):
 def start_amp(amp_val, to_loop, intcode):
     return {"input_1": amp_val, "loop": to_loop, "i": 0, "in_counter": 0, "output_n": 0}, intcode.copy()
  
-# initialize & loop
+
 def feedback_amps(a, b, c, d, e):
     da, op_a = start_amp(a, 1, to_amp)
     db, op_b = start_amp(b, 1, to_amp)
@@ -84,7 +86,7 @@ def series_amps(a, b, c, d, e):
 
     return de["output_n"]
 
-# Try all combinations and find the maximum output
+# Load inputs & solve puzzle
 with open("December_7_input.txt") as f:
     to_amp = f.read()
 to_amp = [int(x) for x in to_amp.split(",")]
