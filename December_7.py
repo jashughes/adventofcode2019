@@ -22,6 +22,7 @@ def loop_mode(mem, input_2, op):
         elif op_code == 2:
             op[op[mem["i"] + 3]] = par(inst[2], op, op[mem["i"] + 1]) * par(inst[1], op, op[mem["i"] + 2])
             mem["i"] += 4
+        
         # Input/Output instructions
         elif op_code == 3:
             new_input = mem["input_1"] if (mem["in_counter"] == 0) else input_2
@@ -32,17 +33,13 @@ def loop_mode(mem, input_2, op):
             mem["output_n"] = par(inst[2], op, op[mem["i"] + 1])
             mem["i"] += 2
             break
+        
         # Jump if TRUE/Jump FALSE
         elif op_code == 5:
-            if (par(inst[2], op, op[mem["i"] + 1]) != 0):
-                mem["i"] = par(inst[1], op, op[mem["i"] + 2])
-            else:
-                mem["i"] += 3
+            mem["i"] = par(inst[1], op, op[mem["i"] + 2]) if (par(inst[2], op, op[mem["i"] + 1]) != 0) else mem["i"] + 3
         elif op_code == 6:
-            if (par(inst[2], op, op[mem["i"] + 1]) == 0):
-                mem["i"] = par(inst[1], op, op[mem["i"] + 2])
-            else:
-                mem["i"] += 3
+            mem["i"] = par(inst[1], op, op[mem["i"] + 2]) if (par(inst[2], op, op[mem["i"] + 1]) == 0) else mem["i"] + 3
+        
         # Less than / Equal to
         elif op_code == 7:
             op[op[mem["i"] + 3]] = int((par(inst[2], op, op[mem["i"] + 1]) < par(inst[1], op, op[mem["i"] + 2])))
@@ -50,6 +47,7 @@ def loop_mode(mem, input_2, op):
         elif op_code == 8:
             op[op[mem["i"] + 3]] = int((par(inst[2], op, op[mem["i"] + 1]) == par(inst[1], op, op[mem["i"] + 2])))
             mem["i"] +=4
+        
         # For error checking
         else:
             print("problem encountered at position ", mem["i"])
