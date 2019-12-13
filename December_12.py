@@ -78,15 +78,15 @@ for c in range(3):
     pc = {k:v[c] for k, v in pos.items()}
     vc =  {k:v[c] for k, v in vel.items()}
     steps = 0
-    marked = [[v for k, v in pc.items()] + [v for k, v in vc.items()]]
+    marked = {str(pc) + str(vc)}
 
     while new:
         apply_gravity(pc, vc)
         apply_velocity(pc, vc)
         steps +=1
-        described = [v for k, v in pc.items()] + [v for k, v in vc.items()]
+        described = str(pc) + str(vc)
         new = described not in marked
-        marked.append(described)
+        marked.add(described)
     period[c] = steps
 
 # Find lowest common denominator
