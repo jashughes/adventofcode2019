@@ -1,4 +1,5 @@
 from itertools import product
+import os
 # A function to parse parameter mode and return index
 def pari(mem, instr, offset, para):
     if instr == 1:
@@ -91,11 +92,12 @@ with open("December_11_input.txt") as f:
 input_code = [int(x) for x in input_code.split(",")]
 
 # initiate computate
-floor_color = 1 # problem statement
+floor_color = 1                          # problem statement
 paint_mem, paint_op = start_comp(floor_color, 1, input_code)
-di = [0, 1] # start facing up
-co = (0, 0) # start at 0,0
-squares_seen = {(0,0): 1}  # start at 0, 0, which is black
+di = [0, 1]                              # start facing up
+co = (0, 0)                              # start at 0,0
+squares_seen = {co: floor_color}         # start at 0, 0, which is black
+
 while paint_mem["loop"] == 1:
     paint_instr = loop_mode(paint_mem, floor_color, paint_op)
     if (len(paint_instr)!= 2):
@@ -113,26 +115,13 @@ print("Squares the painter covers:", len(squares_seen.keys())) #1930
 # Render the image
 aes = {0: ' ', 1: '#'}
 xmin = min([k[0] for k in squares_seen.keys()])
-xmax = max([k[0] for k in squares_seen.keys()])
 ymin = min([k[1] for k in squares_seen.keys()])
-ymax = max([k[1] for k in squares_seen.keys()])
-
-
-painting = [[0] * (-xmin + 1)] * (-ymin)
 
 for y in range(-ymin + 1):
     for x in range(-xmin):
         color = squares_seen.get((-x, -y), 0)
         print(aes[color], end = '')
     print()
-
-#for r in painting:
-#    print(''.join([aes[c] for c in r]))
-#
-#print(squares_seen.get((0,-1), 0), squares_seen.get((0,-2), 0), squares_seen.get((-1,-1), 0), squares_seen.get((-1,-2), 0))
-
-
-
 
 
 
