@@ -150,11 +150,10 @@ while True:
         if board[2] == 4: #ball
             b_old = b_new
             b_new = (board[0], board[1])
-            if H != (0, 0):
-                joy = track_ball(b_old, b_new, H)
+            joy = track_ball(b_old, b_new, H)
         squares[(board[0], board[1])] = board[2]
 
-    # render image
+    # render image on ball/paddle movements
     if board[2] == 4 or board[2] == 3:
         render(squares, aes)
 print(score)
