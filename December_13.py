@@ -105,6 +105,21 @@ def track_ball(b_old, b_new, H):
     else:
         return 1
 
+# A function to render a dictionary map
+def render(di, aes):
+    os.system('cls' if os.name == 'nt' else 'clear')
+    xmax = max([k[0] for k in di.keys()])
+    xmin = min([k[0] for k in di.keys()])
+    ymax = max([k[1] for k in di.keys()])
+    ymin = min([k[1] for k in di.keys()])
+    
+    for y in range(ymax + 1 + abs(ymin)):
+        for x in range(xmax + 1 + abs(xmin)):
+            color = di.get((x - abs(xmin), y - abs(ymin)), 0)
+            print(aes[color], end = '')
+        print()
+
+
 
 # Read Input
 with open("December_13_in.txt") as f:
@@ -141,23 +156,5 @@ while True:
 
     # render image
     if board[2] == 4 or board[2] == 3:
-        os.system('cls' if os.name == 'nt' else 'clear')
-        xmax = max([k[0] for k in squares.keys()])
-        ymax = max([k[1] for k in squares.keys()])
-        for y in range(ymax + 1):
-            for x in range(xmax + 1):
-                color = squares.get((x, y), 0)
-                print(aes[color], end = '')
-            print()
+        render(squares, aes)
 print(score)
-
-    
-
-        
-
-
-
-
-
-
-
